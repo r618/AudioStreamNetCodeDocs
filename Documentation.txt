@@ -1,0 +1,108 @@
+-------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+Quick setup:
+-------------------------------------------------------------------------------
+Drop 'Prefabs\AudioStreamNetCodeServer' and 'Prefabs\NetworkManager' into scene
+- you can set server to automatically start in Host or Server mode, or start network scene as Client
+
+If you now run two instances (editor + build, or build + build) with one set automatically to Server/Host and the other to Client on the same machine,
+the Client should automatically connect to default localhost IP and you should be hearing demo audio on the client (server prefab has monitoring volume set to 0 by default).
+
+Please refer also to demo scene 'Demo\AudioStreamNetCodeDemo' and 'AudioStreamNetCodeDemo.cs' script where everything is set up and 'Prefabs\AudioStreamNetCodeServer' to see how components are ordered on a GameObject.
+
+Asmdef package has weak references (non GUID) to "Unity.Netcode.Runtime" and "AudioStreamSupport".
+
+
+-------------------------------------------------------------------------------
+Server/Source component:
+-------------------------------------------------------------------------------
+
+'AudioStreamNetCodeServer' can be attached on any GameObject which produces sound in an Unity scene - so any AudioSource or AudioListener.
+It acts as Singleton with DontDestroyOnLoad flag and has hard dependency on 'AudioStreamNetCodeServerMixer' and 'AudioStreamEncoder' components which will be automatically added if necessary.
+
+Components on GameObject are order so that the mixer takes whatever sound is being played on the GameObject, adds any clients audio for all transmitting clients (see also below about Client component) and encodes it using OPUS encoder before sending it via RPC call to all connected clients via network transport.
+You can attach any effect/s in the chain on the prefab/gameobject.
+Audio is encoded after all sound processing is done so it respects all effects/spatialization enabled on the GameObject.
+
+For each client which is also transmitting, a new GameObject with AudioSource and this' transform as parent is created at runtime with decoder component.
+Client's AudioSource copies spatial blend setting from AudioStreamNetCodeServer component.
+After decoding the audio is mixed with all/any clients and server audio before encoding.
+
+If not set to automatically start as Host/Server/Client, call appropriate method StartHost() / StartServer(), resp. NetworkManager.Singleton.StartClient() for each mode.
+
+For scripting please refer also to demo scene 'Demo\AudioStreamNetCodeDemo' and 'AudioStreamNetCodeDemo.cs' script.
+
+
+
+-------------------------------------------------------------------------------
+NetworkManager:
+-------------------------------------------------------------------------------
+
+A single NetworkManager in scene is required by Unity NetCode.
+'NetworkManager' prefab in 'Prefabs' is a version customized for AudioStreamNetCode containing also NetworkTransport which has 'AudioStreamNetCodeClient' prefab set as Player Prefab.
+It uses all default settings for NetworkManager and NetworkTransport otherwise.
+
+IMPORTANT: Relay Unity Transport is not implemented due to Unity having restriction for this type of network data on their service - please see 'Relay and alternative transports' below.
+
+
+
+-------------------------------------------------------------------------------
+Client component:
+-------------------------------------------------------------------------------
+
+'AudioStreamNetCodeClient' is a NetworkBehaviour component which decodes incoming network data into its own AudioSource (the AudioSOurce on the same GameObject).
+Optionally it can also send encoded audio back to server when 'transmitClientAudio' is enabled.
+- for transfer from client a separate child GameObject is used with AudioSource for client audio, and encoder. As per above this compressed stream is decoded on server and mixed with audio from server and all other clients.
+
+'AudioStreamNetCodeClient' prefab in 'Prefabs' is setup like this and is set as Player Prefab in NetworkManager.
+
+
+-------------------------------------------------------------------------------
+Relay and alternative transports:
+-------------------------------------------------------------------------------
+
+Realy Unity Transport is not implemented so far, mainly due to UT service restriction,
+
+See e.g. https://docs.unity.com/relay/introduction.html#Fair_usage:
+"
+The Relay service is intended for the transmission of multiplayer game state only. Usage of the service outside this category is subject to rate limiting or termination under terms of service.
+Unfair use of the Relay service includes, but is not limited to, the following examples:
+Audio streaming of any nature, including voice chat
+Video streaming of any nature
+File transfer services
+Distributed computation unrelated to gameplay, including crypto mining
+General network proxying and other VPN-like services
+"
+
+
+It is possible, however, to use custom transport & relay for NetworkManager - see https://docs-multiplayer.unity3d.com/netcode/current/advanced-topics/transports#community-transports-or-writing-your-own
+and https://github.com/Unity-Technologies/multiplayer-community-contributions
+
+
+No direct Relay support for any of the custom transports has been implemented so far.
+
+
+-------------------------------------------------------------------------------
+Audio encoder/decoder:
+-------------------------------------------------------------------------------
+
+For audio de/compression is used Opus C# implementation - [https://github.com/lostromb/concentus] - via pair of components: AudioStreamEncoder and AudioStreamDecoder
+
+AudioStreamEncoder's components public fields should be reasonably well explained via tooltips on each field in the Editor.
+
+Both have 'Monitoring Volume' slider which doesn't modify processed signal, but allows its audible monitoring after it enters de/coder.
+
+
+-------------------------------------------------------------------------------
+Ussage with development version of Unity NetCode:
+-------------------------------------------------------------------------------
+
+To use 'develop' branch of UT NetCOde repository:
+
+- clone developemnt repository [https://github.com/Unity-Technologies/com.unity.netcode.gameobjects], checkout 'develop' branch (should be default),
+- reference repository on disk in manifest:
+    - Unity project can be placed inside the cloned repo directory 'com.unity.netcode.gameobjects'
+    - then in Packages\manifest.json reference it by:
+        "com.unity.netcode.gameobjects": "file:../../com.unity.netcode.gameobjects",
