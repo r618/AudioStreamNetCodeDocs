@@ -14,6 +14,14 @@ Asmdef package has weak references (non GUID) to "Unity.Netcode.Runtime" and "Au
 
 
 -------------------------------------------------------------------------------
+About Demo:
+    AudioStreamNetCodeServer prefab instance in demo scene and AudioStreamNetCodeClient prefab have both extra graphics child game object just for demo purposes.
+    These are used by AudioStreamNetCodeDemo script only and can be removed/replaced/changed.
+    | The demo script tints color of the sprite and places client transform randomly around origin when it's spawned.
+
+
+
+-------------------------------------------------------------------------------
 Server/Source component:
 -------------------------------------------------------------------------------
 
