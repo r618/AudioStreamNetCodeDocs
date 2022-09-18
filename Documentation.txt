@@ -1,14 +1,16 @@
 ::o9.2o22::2020.3.0
--------------------------------------------------------------------------------
+
+===============================================================================
 note: an LTS version of Unity (currently 2020/2021) is *strongly* recommended
 - NetCode for GameObjects might fail to install in newest tech version/s
 (NetCode for GameObjects itself require 2020.3.0 and higher)
--------------------------------------------------------------------------------
+===============================================================================
 
 
--------------------------------------------------------------------------------
+===============================================================================
 Quick setup:
--------------------------------------------------------------------------------
+===============================================================================
+
 Drop 'Prefabs\AudioStreamNetCodeServer' and 'Prefabs\NetworkManager' into scene
 - you can set server to automatically start in Host or Server mode, or start network scene as Client
 
@@ -34,9 +36,9 @@ About Demo:
     - if skybox/background is missing in the scene please assign Demo\_Support\Textures\Skybox material to SkyboxMaterial in Lighting Settings <<
 
 
--------------------------------------------------------------------------------
+===============================================================================
 Server/Source component:
--------------------------------------------------------------------------------
+===============================================================================
 
 'AudioStreamNetCodeServer' can be attached on any GameObject which produces sound in an Unity scene - so any AudioSource or AudioListener.
 It acts as Singleton with DontDestroyOnLoad flag and has hard dependency on 'AudioStreamNetCodeServerMixer' and 'AudioStreamEncoder' components which will be automatically added if necessary.
@@ -55,9 +57,9 @@ For scripting please refer also to demo scene 'Demo\AudioStreamNetCodeDemo' and 
 
 
 
--------------------------------------------------------------------------------
+===============================================================================
 NetworkManager:
--------------------------------------------------------------------------------
+===============================================================================
 
 A single NetworkManager in scene is required by Unity NetCode.
 'NetworkManager' prefab in 'Prefabs' is a version customized for AudioStreamNetCode containing also NetworkTransport which has 'AudioStreamNetCodeClient' prefab set as Player Prefab.
@@ -67,9 +69,9 @@ IMPORTANT: Relay Unity Transport is not implemented due to Unity having restrict
 
 
 
--------------------------------------------------------------------------------
+===============================================================================
 Client component:
--------------------------------------------------------------------------------
+===============================================================================
 
 'AudioStreamNetCodeClient' is a NetworkBehaviour component which decodes incoming network data into its own AudioSource (the AudioSOurce on the same GameObject).
 Optionally it can also send encoded audio back to server when 'transmitClientAudio' is enabled which can be toggled at runtime.
@@ -78,9 +80,9 @@ Optionally it can also send encoded audio back to server when 'transmitClientAud
 'AudioStreamNetCodeClient' prefab in 'Prefabs' is setup like this and is set as Player Prefab in NetworkManager.
 
 
--------------------------------------------------------------------------------
+===============================================================================
 Relay and alternative transports:
--------------------------------------------------------------------------------
+===============================================================================
 
 Realy Unity Transport is not implemented so far, mainly due to UT service restriction,
 
@@ -103,9 +105,9 @@ and https://github.com/Unity-Technologies/multiplayer-community-contributions
 No direct Relay support for any of the custom transports has been implemented so far.
 
 
--------------------------------------------------------------------------------
+===============================================================================
 Audio encoder/decoder:
--------------------------------------------------------------------------------
+===============================================================================
 
 For audio de/compression is used Opus codec C# implementation - [https://github.com/lostromb/concentus] - via pair of components: AudioStreamEncoder and AudioStreamDecoder
 
@@ -114,9 +116,9 @@ AudioStreamEncoder's components public fields should be reasonably well explaine
 Both have 'Monitoring Volume' slider which doesn't modify processed signal, but allows its audition monitoring after it enters de/encoder.
 
 
--------------------------------------------------------------------------------
+===============================================================================
 Ussage with development version of Unity NetCode:
--------------------------------------------------------------------------------
+===============================================================================
 
 To use 'develop' branch of UT NetCOde repository:
 
@@ -126,4 +128,14 @@ To use 'develop' branch of UT NetCOde repository:
     - then in Packages\manifest.json reference it by:
         "com.unity.netcode.gameobjects": "file:../../com.unity.netcode.gameobjects",
 
--------------------------------------------------------------------------------
+
+===============================================================================
+IL2CPP builds and building with IL2CPP runtime checks turned off:
+===============================================================================
+
+Code running most tight audio loops can be optionally built with null, array bounds and division by zero checks turned off for IL2CPP builds (which is generally recommended but it's advisable to verify that build is running correctly with them being turned off first)
+
+The needed attributes for this are included in the package, but you are advised to verify this, i.e. check for your Unity version, see e.g. https://docs.unity3d.com/2018.4/Documentation/Manual/IL2CPP-CompilerOptions.html (and your/respective Editor version) how to do that.
+The file 'Il2CppSetOptionAttribute.cs' must be placed into project's 'AudioStream/Support' folder (or any of its subfolders) - must be part of the 'AudioStreamSupport' assembly definition
+
+- if project doesn't have ENABLE_IL2CPP compiler define added already, add ENABLE_IL2CPP to Scripting Define Symbols in Player Settings
