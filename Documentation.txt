@@ -2,6 +2,7 @@
 -------------------------------------------------------------------------------
 note: an LTS version of Unity (currently 2020/2021) is *strongly* recommended
 - NetCode for GameObjects might fail to install in newest tech version/s
+(NetCode for GameObjects itself require 2020.3.0 and higher)
 -------------------------------------------------------------------------------
 
 
