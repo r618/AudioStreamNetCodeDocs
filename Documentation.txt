@@ -1,3 +1,9 @@
+::o9.2o22::2020.3.0
+-------------------------------------------------------------------------------
+note: an LTS version of Unity (currently 2020/2021) is *strongly* recommended
+- NetCode for GameObjects might fail to install in newest tech version/s
+-------------------------------------------------------------------------------
+
 
 -------------------------------------------------------------------------------
 Quick setup:
@@ -20,9 +26,12 @@ About Demo:
 
     - The demo tints color of the sprite and places client transform randomly around origin when it's spawned.
     - All clients also have their transforms synced to server:
-        - AudioStreamNetCodeClient prefab has NetworkTransform, and demo adds a script to update their positions
+        - AudioStreamNetCodeClient prefab has NetworkTransform, and demo adds a script allowing to move clients at runtime
         - use W/A/S/D to move, R to reset the position
         - see OnClientConnected event handler in AudioStreamNetCodeDemo
+
+    - if skybox/background is missing in the scene please assign Demo\_Support\Textures\Skybox material to SkyboxMaterial in Lighting Settings <<
+
 
 -------------------------------------------------------------------------------
 Server/Source component:
