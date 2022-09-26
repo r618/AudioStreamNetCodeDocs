@@ -36,6 +36,13 @@ About Demo:
     - if skybox/background is missing in the scene please assign Demo\_Support\Textures\Skybox material to SkyboxMaterial in Lighting Settings <<
 
 
+-------------------------------------------------------------------------------
+General:
+    - you will probably want to increase Networkmanager/Transport defaults such as 'Max Send Queue Size' if connecting many clients
+    - moreover, since the demo uses Transform syncing for all clients, these use Reliable queue which require higher bandwidth ->
+        when using audio transfer only the limits on Transport can be easened
+
+
 ===============================================================================
 Server/Source component:
 ===============================================================================
