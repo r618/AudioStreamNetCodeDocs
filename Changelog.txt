@@ -2,3 +2,7 @@
 1.0 o92o22, Xcities
 - initial release
 - client/server audio mixer 
+
+===============================================================================
+1.1 1o2o22
+- demo scene: + audio visualization textures on main listener
