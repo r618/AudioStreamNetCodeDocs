@@ -1,4 +1,4 @@
-::o9.2o22::2020.3.0
+0::o9.2o22::2020.3.0
 
 ===============================================================================
 note: an LTS version of Unity (currently 2020/2021) is *strongly* recommended
@@ -84,7 +84,10 @@ Client component:
 Optionally it can also send encoded audio back to server when 'transmitClientAudio' is enabled which can be toggled at runtime.
 - for transfer from client a separate child GameObject is used with AudioSource for client audio with its own encoder (see client prefab). As per above this compressed stream is decoded on server and mixed with audio from server and all other clients.
 
-'AudioStreamNetCodeClient' prefab in 'Prefabs' is setup like this and is set as Player Prefab in NetworkManager.
+'AudioStreamNetCodeClient' prefab in 'Prefabs' is setup like this and is set as Player Prefab on NetworkManager.
+
+ClientTxAudioSource
+ClientTxUnityMicrophone
 
 
 ===============================================================================
@@ -120,14 +123,14 @@ For audio de/compression is used Opus codec C# implementation - [https://github.
 
 AudioStreamEncoder's components public fields should be reasonably well explained via tooltips on each field in the Editor.
 
-Both have 'Monitoring Volume' slider which doesn't modify processed signal, but allows its audition monitoring after it enters de/encoder.
+Both have 'Monitoring Volume' slider which doesn't modify processed signal, but allows its audition monitoring after it enters/leaves de/encoder.
 
 
 ===============================================================================
 Ussage with development version of Unity NetCode:
 ===============================================================================
 
-To use 'develop' branch of UT NetCOde repository:
+To use 'develop' branch of UT NetCode repository:
 
 - clone developemnt repository [https://github.com/Unity-Technologies/com.unity.netcode.gameobjects], checkout 'develop' branch (should be default),
 - reference repository on disk in manifest:
