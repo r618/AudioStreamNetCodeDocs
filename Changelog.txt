@@ -9,12 +9,12 @@
 
 ===============================================================================
 1.2 o82o23
-- Unity NetCode required ~1.5.x, min. Unity 2021.3 LTS
-(this should also fix macOS/M1+ unability to bind server at times)
+- Unity NetCode ~1.5.x, requires min. Unity 2021.3 LTS
+	(this should also fix macOS/M1+ unability to bind server at times)
 
 - clients transmission (when clients transmit back to server/host):
 	- fixed/updated server's client mixer - each client receives its own specific audio w/o its own audio included
 	- added possibility for each client to transmit Unity Microphone
 
 - demo scene:
-	- added Unity Microphone transmission to clients
+	- added Unity Microphone transmission option to clients

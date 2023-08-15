@@ -1,9 +1,10 @@
 0::o9.2o22::2020.3.0
 
 ===============================================================================
-note: an LTS version of Unity (currently 2020/2021) is *strongly* recommended
+note: an LTS version of Unity (currently 2021 and up) is *strongly* recommended
 - NetCode for GameObjects might fail to install in newest tech version/s
-(NetCode for GameObjects itself require 2020.3.0 and higher)
+(NetCode for GameObjects 1.5.x itself requires 2021.3 and higher)
+Please refer to official NetCode for GameObjects installation guide e.g. [https://docs-multiplayer.unity3d.com/netcode/current/installation/]
 ===============================================================================
 
 
@@ -48,15 +49,14 @@ Server/Source component:
 ===============================================================================
 
 'AudioStreamNetCodeServer' can be attached on any GameObject which produces sound in an Unity scene - so any AudioSource or AudioListener.
-It acts as Singleton with DontDestroyOnLoad flag and has hard dependency on 'AudioStreamNetCodeServerMixer' and 'AudioStreamEncoder' components which will be automatically added if necessary.
+It acts as Singleton with DontDestroyOnLoad flag and has hard dependency on 'AudioSourceCaptureBuffer' which will be automatically added if necessary.
 
-Components on GameObject are ordered so that the mixer takes whatever sound is being played on the GameObject, adds any clients audio for all transmitting clients (see also below about Client component) and encodes it using OPUS encoder before sending it via RPC call to all connected clients via network transport.
-You can attach any effect/s in the chain on the prefab/gameobject.
+You can attach any effect/s in the chain on the prefab/gameobject above 'AudioSourceCaptureBuffer'.
 Audio is encoded after all sound processing is done so it respects all effects/spatialization enabled on the GameObject.
 
-For each client which is also optionally transmitting back to server, a new GameObject with AudioSource and this' transform as parent is created at runtime with decoder component.
-Transmitting Client's AudioSource copies spatial blend setting from AudioStreamNetCodeServer component.
-After decoding the audio is mixed with all/any clients and server audio before encoding and streaming to clients.
+For each connected client a spearate GameObject is created parented under 'AudioStreamNetCodeServer' - this is currently necessary because each client requires unique mix since it can transmit back (see below),
+thus requiring unique AudioSource and encoder.
+On server all clients GameObjects names also contain their connection id.
 
 If not set to automatically start as Host/Server/Client, call appropriate method StartHost() / StartServer(), resp. NetworkManager.Singleton.StartClient() for each mode.
 
@@ -80,14 +80,17 @@ IMPORTANT: Relay Unity Transport is not implemented due to Unity having restrict
 Client component:
 ===============================================================================
 
-'AudioStreamNetCodeClient' is a NetworkBehaviour component which decodes incoming network data into its own AudioSource (the AudioSOurce on the same GameObject).
-Optionally it can also send encoded audio back to server when 'transmitClientAudio' is enabled which can be toggled at runtime.
-- for transfer from client a separate child GameObject is used with AudioSource for client audio with its own encoder (see client prefab). As per above this compressed stream is decoded on server and mixed with audio from server and all other clients.
+'AudioStreamNetCodeClient' is a NetworkBehaviour component which decodes incoming network data into its own AudioSource (the AudioSource on the same GameObject).
+
+Optionally it can also send encoded audio back to server - either its own AudioSource or UnityMicrophone
+Thesse are set up on separate GameObjects as children of AudioStreamNetCodeClient and are being transmitted when 'transmitClientAudioSource'/'transmitClientMicrophone' are ON.
+
+    'ClientTxAudioSource' - client audio, customize AudioSource here
+    'ClientTxUnityMicrophone' - client microphone, please customize AudioStreamUnityMicrophone, such as Microphone Device Id, here
+
+As per above this compressed stream is decoded on server and mixed with audio from server and all other clients.
 
 'AudioStreamNetCodeClient' prefab in 'Prefabs' is setup like this and is set as Player Prefab on NetworkManager.
-
-ClientTxAudioSource
-ClientTxUnityMicrophone
 
 
 ===============================================================================
@@ -124,19 +127,6 @@ For audio de/compression is used Opus codec C# implementation - [https://github.
 AudioStreamEncoder's components public fields should be reasonably well explained via tooltips on each field in the Editor.
 
 Both have 'Monitoring Volume' slider which doesn't modify processed signal, but allows its audition monitoring after it enters/leaves de/encoder.
-
-
-===============================================================================
-Ussage with development version of Unity NetCode:
-===============================================================================
-
-To use 'develop' branch of UT NetCode repository:
-
-- clone developemnt repository [https://github.com/Unity-Technologies/com.unity.netcode.gameobjects], checkout 'develop' branch (should be default),
-- reference repository on disk in manifest:
-    - Unity project can be placed inside the cloned repo directory 'com.unity.netcode.gameobjects'
-    - then in Packages\manifest.json reference it by:
-        "com.unity.netcode.gameobjects": "file:../../com.unity.netcode.gameobjects",
 
 
 ===============================================================================
