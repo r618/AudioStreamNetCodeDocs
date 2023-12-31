@@ -14,7 +14,19 @@
 
 - clients transmission (when clients transmit back to server/host):
 	- fixed/updated server's client mixer - each client receives its own specific audio w/o its own audio included
-	- added possibility for each client to transmit Unity Microphone
+	- added option for each client to transmit Unity Microphone
 
 - demo scene:
 	- added Unity Microphone transmission option to clients
+
+===============================================================================
+1.2.1 122o23
+
+Host/Server:
+	- added new toggle to AudioStreamNetCodeServer 'use2DRecevingAudioSources':
+		- when On all receving AudioSources (clients and clients' audio on server) are in 2D mode which improves latency over network - see Docs for more
+	- fixed a bug with 'All clients mix audio volume/monitoring volume' where volume/monitoring volume was not applied correctly for clients' audio mix
+	
+- demo scene:
+	- added a toggle 'Use lower latency mode (2D only receivers)' for the above which is available before launching host/server
+	- this applies only to receivers - original signal can still be spatialized - run at least two separate client instances demos to see how this behaves

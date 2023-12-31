@@ -34,6 +34,9 @@ About Demo:
         - use W/A/S/D to move, R to reset the position
         - see OnClientConnected event handler in AudioStreamNetCodeDemo
 
+    - Use 'Use lower latency mode (2D only receivers)' before starting Host/Server to use all needed/receiving AudioSources in lower latency 2D mode over network
+    See also 'Lower latency 2D mode' section below
+
     - if skybox/background is missing in the scene please assign Demo\_Support\Textures\Skybox material to SkyboxMaterial in Lighting Settings <<
 
 
@@ -56,6 +59,9 @@ Audio is encoded after all sound processing is done so it respects all effects/s
 
 For each connected client a spearate GameObject is created parented under 'AudioStreamNetCodeServer' - this is currently necessary because each client requires unique mix since it can transmit back (see below),
 thus requiring unique AudioSource and encoder.
+Clients mix/encoders try to be as efficient as possible, but due to above there's some CPU processing overhead which scales linearly with the amount of connected clients.
+[couple of clients is OK, but this will improve in the future]
+
 On server all clients GameObjects names also contain their connection id.
 
 If not set to automatically start as Host/Server/Client, call appropriate method StartHost() / StartServer(), resp. NetworkManager.Singleton.StartClient() for each mode.
@@ -127,6 +133,20 @@ For audio de/compression is used Opus codec C# implementation - [https://github.
 AudioStreamEncoder's components public fields should be reasonably well explained via tooltips on each field in the Editor.
 
 Both have 'Monitoring Volume' slider which doesn't modify processed signal, but allows its audition monitoring after it enters/leaves de/encoder.
+
+
+===============================================================================
+Lower latency 2D mode:
+===============================================================================
+
+To improve audio latency over network, host/server ('AudioStreamNetCodeServer' component/prefab) can use 'use2DRecevingAudioSources' option/toggle -
+- when ON all receiving AudioSources play in 2D mode (with ~ignored spatialization)
+- receiving AudioSources are: all receving clients, and all clients' audio received on the server when clients are transmitting back (which gets in turn mixed for all other clients)
+- note this means that original signal/audio _can_ still be spatialized - this spatialized signal is then sent over network but receivers play it identically ~regardless of their position in 3D
+you can of course still use 'Spatial Blend' on clients prefabs as usually
+
+This can lead to interesting combinations - I recommend running at least two separate client instances demos connecting to a host/server to see it in action.
+
 
 
 ===============================================================================
