@@ -30,3 +30,9 @@ Host/Server:
 - demo scene:
 	- added a toggle 'Use lower latency mode (2D only receivers)' for the above which is available before launching host/server
 	- this applies only to receivers - original signal can still be spatialized - run at least two separate client instances demos to see how this behaves
+
+===============================================================================
+2.0
+	- Unity 6.0 as minimal version together with NetCode 2.7.0 (current latest)
+	- `Il2CppSetOptionAttribute` attributes used for IL2CPP builds are enabled by default - necessary setup steps on how to use them properly were added to initial import README doc
+	- fixed small bug w/NetworkManager.Singleton and public server's Encoder in demo
