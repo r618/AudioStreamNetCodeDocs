@@ -41,3 +41,11 @@ Host/Server:
 2.0.1
 	- compatible with the New Input System
 	- demo scene: fixed NullReferenceException in OnGUI when the host/server was stopped
+
+===============================================================================
+2.0.2
+	- optimize downstream mix - filter owners on server
+	- start/stop use reliable channel
+	- improve 3D
+	- fix audio thread synchronization
+	- variable packet# per send (improves dependency on unity main thread)
