@@ -50,3 +50,4 @@ Host/Server:
 	- fix audio thread synchronization
 	- variable packet# per send (improves dependency on unity main thread)
 	- display server local IP, clarify IPs usage text in demo
+	- fixed client's properties / colors: NetworkVariable<Color> are now synced across the session
