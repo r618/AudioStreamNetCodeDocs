@@ -49,3 +49,4 @@ Host/Server:
 	- improve 3D
 	- fix audio thread synchronization
 	- variable packet# per send (improves dependency on unity main thread)
+	- display server local IP, clarify IPs usage text in demo
