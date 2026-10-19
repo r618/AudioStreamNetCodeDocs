@@ -6,11 +6,11 @@ Use this guide to integrate and maintain the AudioStreamNetCode Unity asset. Pat
 
 The asset sends Unity audio through Netcode for GameObjects (NGO). It uses the bundled Concentus Opus codec. A host or server sends a separate audio mix to each connected client. A client can also send its AudioSource, microphone, or both to the server.
 
-Use the supplied prefabs as the setup reference. Read the current implementation before changes. `_Docs/Documentation.md` contains older Unity and NGO setup notes. `_Docs/Changelog.md` contains newer changes. Neither file alone defines the current API or dependencies.
+Use the supplied prefabs as the setup reference. Read the current implementation before changes. [Documentation.md](Documentation.md) contains older Unity and NGO setup notes. [Changelog.md](Changelog.md) contains newer changes. Neither file alone defines the current API or dependencies.
 
 ## Dependencies and version checks
 
-The inspected development project uses Unity `6000.0.85f1` and `com.unity.netcode.gameobjects` `2.13.2`. These are checkout values, not a claim that all other versions work. The 2.0 changelog gives Unity 6.0 and NGO 2.7.0 as its baseline. Recheck the project's manifest and the code before a dependency change.
+The 2.0 changelog gives Unity 6.0 and NGO 2.7.0 as its baseline. Check the target project's Editor version, package manifest, and installed asset code before setup or a dependency change. Do not assume that all Unity and NGO versions are compatible.
 
 Required parts:
 
@@ -20,10 +20,10 @@ Required parts:
 | `AudioStreamNetCode` assembly | `Scripts/AudioStreamNetCode.asmdef` | References `Unity.Netcode.Runtime`, `AudioStreamSupport`, and `Il2CppSetOptionAttribute` |
 | `AudioStreamSupport` assembly | `Support/AudioStreamSupport.asmdef` | Shared audio, buffers, input, and runtime information; also has a GUID assembly reference |
 | Concentus | `Libs/Concentus/Concentus.dll` | Managed Opus implementation |
-| IL2CPP attributes | Project `Assets/Il2CppSetOptionAttribute` in this checkout | Assembly named `Il2CppSetOptionAttribute` with Unity's attribute source |
+| IL2CPP attributes | A project folder containing Unity's IL2CPP attribute source and its assembly definition | Assembly named `Il2CppSetOptionAttribute` with Unity's attribute source |
 | Input System | Project manifest and `Support/UserInput.cs` | Demo input supports old input or the new Input System through conditional code |
 
-For a new project, follow `!!README1ST!! INITIAL IMPORT ERRORS.md` for the missing IL2CPP attribute assembly. Copy the attribute source from the installed Unity Editor and use the required assembly name. Do not remove attribute references to hide import errors. Some codec and mixing methods use the attributes without an `ENABLE_IL2CPP` condition, so the assembly is required for script import too.
+For a new project, follow [initial-import README](<../!!README1ST!! INITIAL IMPORT ERRORS.md>) for the missing IL2CPP attribute assembly. Copy the attribute source from the installed Unity Editor and use the required assembly name. Do not remove attribute references to hide import errors. Some codec and mixing methods use the attributes without an `ENABLE_IL2CPP` condition, so the assembly is required for script import too.
 
 Check the GUID reference in `AudioStreamSupport.asmdef` against the destination project. Do not assume that copying only `Scripts` is sufficient. Keep relevant support code, libraries, prefabs, resources, and their `.meta` files together. Keep third-party notices and license files with the asset.
 
@@ -47,7 +47,7 @@ Check the GUID reference in `AudioStreamSupport.asmdef` against the destination 
 
 ## Scene setup
 
-Perform scene setup manually in Unity when the user runs the project. Do not generate a replacement scene or construct the prefab hierarchy from code.
+Use the supplied prefabs as the reference for component order and required scene wiring.
 
 1. Add `Prefabs/NetworkManager.prefab` and `Prefabs/AudioStreamNetCodeServer.prefab` to the scene. Keep a single active NetworkManager and a single asset server controller per process. The server controller is needed in the client process too.
 2. Keep the NetworkManager's UnityTransport reference. The current server code expects UnityTransport with the direct `UnityTransport` protocol.

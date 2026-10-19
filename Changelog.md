@@ -1,0 +1,58 @@
+# AudioStreamNetCode changelog
+
+[Documentation](Documentation.md) | [Agent usage guide](SKILLS.md)
+
+## 1.0 o92o22, Xcities
+
+- initial release
+- client/server audio mixer
+
+## 1.1 1o2o22
+
+- demo scene: + audio visualization textures on the main listener
+
+## 1.2 o82o23
+
+- Unity NetCode ~1.5.x, requires min. Unity 2021.3 LTS
+    (this should also fix macOS/M1+ inability to bind the server at times)
+
+- clients' transmission (when clients transmit back to server/host):
+    - fixed/updated server's client mixer - each client receives its own specific audio w/o its own audio included
+    - added an option for each client to transmit Unity Microphone
+
+- demo scene:
+    - added a Unity Microphone transmission option to clients
+
+## 1.2.1 122o23
+
+### Host/Server
+
+- added a new toggle to AudioStreamNetCodeServer `use2DRecevingAudioSources`:
+    - when On, all receiving AudioSources (clients and clients' audio on the server) are in 2D mode which improves latency over the network - see Docs for more
+- fixed a bug with 'All clients mix audio volume/monitoring volume' where volume/monitoring volume was not applied correctly for the clients' audio mix
+
+- demo scene:
+    - added a toggle 'Use lower latency mode (2D only receivers)' for the above which is available before launching host/server
+    - this applies only to receivers - the original signal can still be spatialized - run at least two separate demo client instances to see how this behaves
+
+## 2.0
+
+- Unity 6.0 as the minimum version together with NetCode 2.7.0 (current latest)
+- `Il2CppSetOptionAttribute` attributes used for IL2CPP builds are enabled by default - necessary setup steps on how to use them properly were added to the initial import README doc
+- fixed a small bug w/NetworkManager.Singleton and the server's public Encoder in the demo
+
+## 2.0.1
+
+- compatible with the New Input System
+- demo scene: fixed NullReferenceException in OnGUI when the host/server was stopped
+
+## 2.0.2
+
+- optimize downstream mix - filter owners on server
+- start/stop use a reliable channel
+- improved 3D send/receive
+- fixed audio thread synchronization
+- variable packet # per send (improves dependency on the Unity main thread)
+- display the server local IP, clarify IP usage text in the demo
+- fixed clients' properties / colors: `NetworkVariable<Color>` values are now synced across the session
+- added [SKILLS.md](SKILLS.md) file with instructions on how to consume and use the package
